@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
-const getAllPeopleQuery = gql`
+const getAllPeople = gql`
   query {
     getAllPeople {
       id
@@ -9,4 +9,4 @@ const getAllPeopleQuery = gql`
   }
 `;
 
-export { getAllPeopleQuery };
+export { getAllPeople };
