@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { StyledEngineProvider } from '@mui/material/styles';
 import { ApolloProvider } from '@apollo/client';
-import GraphqlClient from './graphql/graphql.client';
+import GraphqlClient from './graphql/client/graphql.client';
 import SearchPage from './pages/page.search';
 import reportWebVitals from './reportWebVitals';
 
