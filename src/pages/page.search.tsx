@@ -19,11 +19,14 @@ const StyledListItem = styled(ListItem)`
 
 const SearchPage: FunctionComponent = () => {
   const { register, handleSubmit } = useForm();
-  const { loading, error, getAllZipCodes } = useZipCode();
+  const { loading, error, getAllZipCodes, getZipCode } = useZipCode();
 
   const [zipCodes, setZipCodes] = useState<ZipCode[]>([]);
 
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = async (data: any) => {
+    const zipCode = await getZipCode(data.zipCode);
+    setZipCodes([zipCode]);
+  };
 
   useEffect(() => {
     async function fetchAllZipCodes() {
@@ -40,14 +43,14 @@ const SearchPage: FunctionComponent = () => {
       <SearchCard>
         <SearchContainer>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <input defaultValue="test" {...register('name')} />
+            <input defaultValue="1" {...register('zipCode')} />
             <input type="submit"/>
           </form>
         </SearchContainer>
       </SearchCard>
       <List>
         {zipCodes && zipCodes.map((zipCode: ZipCode) => (
-          <StyledListItem key={zipCode.id}>{zipCode.name}</StyledListItem>
+          zipCode && <StyledListItem key={zipCode.id}>{zipCode.name}</StyledListItem>
         ))}
       </List>
     </>

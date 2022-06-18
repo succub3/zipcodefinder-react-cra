@@ -5,7 +5,7 @@ export default function useZipCode(): ZipCodeGraphQLQueries {
 
   const [
     queryGetAllZipCodes,
-    { data: getAllZipCodesData, loading: getAllZipCodesLoading, error: getAllZipCodesError }
+    { /*data: getAllZipCodesData,*/ loading: getAllZipCodesLoading, error: getAllZipCodesError }
   ] = useLazyQuery(QUERY_GET_ALL_ZIP_CODES, {
     onError: (error) => {
       /* no-op */
@@ -19,7 +19,7 @@ export default function useZipCode(): ZipCodeGraphQLQueries {
 
   const [
     queryGetZipCode,
-    { data: getZipCodeData, loading: getZipCodeLoading, error: getZipCodeError }
+    { /*data: getZipCodeData,*/ loading: getZipCodeLoading, error: getZipCodeError }
   ] = useLazyQuery(QUERY_GET_ZIP_CODE, {
     onError: (error) => {
       /* don't throw any error */
@@ -27,7 +27,7 @@ export default function useZipCode(): ZipCodeGraphQLQueries {
   });
 
   const getZipCode = async (zipCode: string): Promise<ZipCode> => {
-    const { data } = await queryGetZipCode({ variables: { id: zipCode } });
+    const { data } = await queryGetZipCode({ variables: { zipCode } });
     return data.getZipCode;
   };
 
