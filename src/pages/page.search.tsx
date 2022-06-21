@@ -1,5 +1,4 @@
-import { FunctionComponent, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FunctionComponent, SyntheticEvent, useMemo, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { Card, TextField, Grid, Button, Autocomplete } from "@mui/material";
 import useZipCodeFinder from "../graphql/hooks/useZipCodeFinder.hook";
@@ -40,20 +39,22 @@ const ErrorGrid = styled(Grid)`
   color: red;
 `;
 
+interface CountryOption {
+  label: string;
+  value: string;
+}
+
 const SearchPage: FunctionComponent = () => {
-  const { register, handleSubmit } = useForm();
   const { loading, error, getZipCodeInfo } = useZipCodeFinder();
 
   const countryOptions = useMemo(() => countryList().getData(), []);
+  const countryOptionUS = countryOptions[236];
+  const [countryOption, setCountryOption] = useState<CountryOption | null>(countryOptionUS);
+  const [postalCode, setPostalCode] = useState<string>("");
   const [zipCodeInfo, setZipCodeInfo] = useState<ZipCodeInfo>();
 
-  const changeHandler = (value: any) => {
-    console.log("value=", value);
-  };
-
-  const onSubmit = async (data: any) => {
-    console.log("data=", data);
-    const zipCodeInfo = await getZipCodeInfo(data.countryCode, data.postalCode);
+  const handleSearch = async () => {
+    const zipCodeInfo = await getZipCodeInfo(countryOption?.value ?? "", postalCode);
     setZipCodeInfo(zipCodeInfo);
   };
 
@@ -67,39 +68,36 @@ const SearchPage: FunctionComponent = () => {
     >
       <Grid item>
         <SearchCard>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container>
-              <Grid item>
-                {/*<CountryCodeTextField*/}
-                {/*  size="small"*/}
-                {/*  label="Country Code"*/}
-                {/*  inputProps={{ maxLength: 2 }}*/}
-                {/*  {...register("countryCode")}*/}
-                {/*/>*/}
-                <Autocomplete
-                  disablePortal
-                  size="small"
-                  getOptionLabel={(option: any) => option.value}
-                  options={countryOptions}
-                  sx={{ width: 300 }}
-                  renderInput={(params) => {
-                    return <CountryCodeTextField {...params} label="Country" {...register("countryCode")} />}
-                  }
-                />
-              </Grid>
-              <Grid item>
-                <PostalCodeTextField
-                  size="small"
-                  label="Zip Code"
-                  inputProps={{ maxLength: 8 }}
-                  {...register("postalCode")}
-                />
-              </Grid>
-              <Grid item>
-                <Button type="submit" variant="outlined">Search</Button>
-              </Grid>
+          <Grid container>
+            <Grid item>
+              <Autocomplete
+                disablePortal
+                size="small"
+                getOptionLabel={(option: any) => option.label}
+                options={countryOptions}
+                sx={{ width: 300 }}
+                renderInput={(params) => {
+                  return <CountryCodeTextField {...params} label="Country"/>}
+                }
+                value={countryOption}
+                onChange={(_event: SyntheticEvent<Element, Event>, value: CountryOption | null): void => {
+                  setCountryOption(value);
+                }}
+              />
             </Grid>
-          </form>
+            <Grid item>
+              <PostalCodeTextField
+                size="small"
+                label="Zip Code"
+                inputProps={{ maxLength: 8 }}
+                value={postalCode}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>): void => setPostalCode(event.target.value)}
+              />
+            </Grid>
+            <Grid item>
+              <Button type="submit" variant="outlined" onClick={handleSearch}>Search</Button>
+            </Grid>
+          </Grid>
         </SearchCard>
       </Grid>
       { error && <ErrorGrid item>Invalid entries</ErrorGrid> }
