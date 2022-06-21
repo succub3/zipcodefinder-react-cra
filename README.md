@@ -7,6 +7,11 @@ https://nodejs.org/en/download/
 npm install -g yarn
 ```
 
+## Install dependencies
+```
+yarn install
+```
+
 ## Run
 ```
 yarn start
