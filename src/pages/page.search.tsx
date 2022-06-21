@@ -103,33 +103,33 @@ const SearchPage: FunctionComponent = () => {
       { error && <ErrorGrid item>Invalid entries</ErrorGrid> }
       { zipCodeInfo &&
         <Grid item>
-          <RowGrid container>
-            <LabelGrid item>Country:</LabelGrid>
-            <ValueGrid item>{`${zipCodeInfo.country} (${zipCodeInfo.countryCode})`}</ValueGrid>
-          </RowGrid>
-          <RowGrid container>
-              <LabelGrid item>Zip Code:</LabelGrid>
-              <ValueGrid item>{zipCodeInfo.zipCode}</ValueGrid>
-          </RowGrid>
+          {/*<RowGrid container>*/}
+          {/*  <LabelGrid item>Country:</LabelGrid>*/}
+          {/*  <ValueGrid item>{`${zipCodeInfo.country} (${zipCodeInfo.countryCode})`}</ValueGrid>*/}
+          {/*</RowGrid>*/}
+          {/*<RowGrid container>*/}
+          {/*    <LabelGrid item>Zip Code:</LabelGrid>*/}
+          {/*    <ValueGrid item>{zipCodeInfo.zipCode}</ValueGrid>*/}
+          {/*</RowGrid>*/}
           <RowGrid container>
             { zipCodeInfo.locations && zipCodeInfo.locations.map((location) =>
               <Grid item key={`${location.latitude}, ${location.longitude}`}>
                 <Grid container>
-                  <LabelGrid item>Location:</LabelGrid>
+                  <LabelGrid item>City:</LabelGrid>
                   <ValueGrid item>{location.locationName}</ValueGrid>
                 </Grid>
                 <Grid container>
                   <LabelGrid item>State:</LabelGrid>
                   <ValueGrid item>{`${location.state} (${location.stateCode})`}</ValueGrid>
                 </Grid>
-                <Grid container>
-                  <LabelGrid item>Latitude:</LabelGrid>
-                  <ValueGrid item>{location.latitude}</ValueGrid>
-                </Grid>
-                <Grid container>
-                  <LabelGrid item>Longitude:</LabelGrid>
-                  <ValueGrid item>{location.longitude}</ValueGrid>
-                </Grid>
+                {/*<Grid container>*/}
+                {/*  <LabelGrid item>Latitude:</LabelGrid>*/}
+                {/*  <ValueGrid item>{location.latitude}</ValueGrid>*/}
+                {/*</Grid>*/}
+                {/*<Grid container>*/}
+                {/*  <LabelGrid item>Longitude:</LabelGrid>*/}
+                {/*  <ValueGrid item>{location.longitude}</ValueGrid>*/}
+                {/*</Grid>*/}
               </Grid>
             )}
           </RowGrid>
