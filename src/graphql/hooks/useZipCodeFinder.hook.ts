@@ -1,5 +1,5 @@
-import { QUERY_GET_ZIP_CODE_INFO, ZipCodeInfo, ZipCodeFinderGraphQLQueries } from '../queries/zipcode.queries';
-import { useLazyQuery } from '@apollo/client';
+import { QUERY_GET_ZIP_CODE_INFO, ZipCodeInfo, ZipCodeFinderGraphQLQueries } from "../queries/zipcode.queries";
+import { useLazyQuery } from "@apollo/client";
 
 export default function useZipCodeFinder(): ZipCodeFinderGraphQLQueries {
 

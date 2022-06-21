@@ -1,4 +1,4 @@
-import { DEFAULT_API_URL } from '../../utils/constants';
+import { DEFAULT_API_URL } from "../../utils/constants";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
 const GraphqlClient = new ApolloClient({
