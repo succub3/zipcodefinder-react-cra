@@ -6,10 +6,6 @@ import { ZipCodeInfo } from "../graphql/queries/zipcode.queries";
 // @ts-ignore
 import countryList from "react-select-country-list";
 
-const CountryCodeTextField = styled(TextField)`
-  padding-right: 16px;
-`;
-
 const PostalCodeTextField = styled(TextField)`
   padding-right: 16px;
 `;
@@ -27,7 +23,7 @@ const ValueGrid = styled(Grid)`
   padding-right: 8px;
 `;
 
-const SearchCard = styled(Card)`
+const PaddedCard = styled(Card)`
   padding: 16px;
 `;
 
@@ -51,12 +47,18 @@ const SearchPage: FunctionComponent = () => {
   const countryOptionUS = countryOptions[236];
   const [countryOption, setCountryOption] = useState<CountryOption | null>(countryOptionUS);
   const [postalCode, setPostalCode] = useState<string>("");
-  const [zipCodeInfo, setZipCodeInfo] = useState<ZipCodeInfo>();
+  const [zipCodeInfoHistory, setZipCodeInfoHistory] = useState<ZipCodeInfo[]>([]);
 
   const handleSearch = async () => {
     const zipCodeInfo = await getZipCodeInfo(countryOption?.value ?? "", postalCode);
-    setZipCodeInfo(zipCodeInfo);
+    if (zipCodeInfo) {
+      setZipCodeInfoHistory([zipCodeInfo, ...zipCodeInfoHistory].slice(0, 5));
+    }
   };
+
+  const handleClear = () => {
+    setZipCodeInfoHistory([]);
+  }
 
   return loading ? <pre>Loading...</pre> : (
     <ContainerGrid
@@ -67,7 +69,7 @@ const SearchPage: FunctionComponent = () => {
       spacing={2}
     >
       <Grid item>
-        <SearchCard>
+        <PaddedCard>
           <Grid container>
             <Grid item>
               <Autocomplete
@@ -75,9 +77,9 @@ const SearchPage: FunctionComponent = () => {
                 size="small"
                 getOptionLabel={(option: any) => option.label}
                 options={countryOptions}
-                sx={{ width: 300 }}
+                sx={{ width: 300, paddingRight: "16px" }}
                 renderInput={(params) => {
-                  return <CountryCodeTextField {...params} label="Country"/>}
+                  return <TextField {...params} label="Country"/>}
                 }
                 value={countryOption}
                 onChange={(_event: SyntheticEvent<Element, Event>, value: CountryOption | null): void => {
@@ -94,47 +96,42 @@ const SearchPage: FunctionComponent = () => {
                 onChange={(event: React.ChangeEvent<HTMLInputElement>): void => setPostalCode(event.target.value)}
               />
             </Grid>
-            <Grid item>
+            <Grid item sx={{ paddingRight: "16px" }}>
               <Button type="submit" variant="outlined" onClick={handleSearch}>Search</Button>
             </Grid>
+            <Grid item sx={{ paddingRight: "16px" }}>
+              <Button variant="outlined" color="secondary" onClick={handleClear}>Clear</Button>
+            </Grid>
           </Grid>
-        </SearchCard>
+        </PaddedCard>
       </Grid>
       { error && <ErrorGrid item>Invalid entries</ErrorGrid> }
-      { zipCodeInfo &&
-        <Grid item>
-          {/*<RowGrid container>*/}
-          {/*  <LabelGrid item>Country:</LabelGrid>*/}
-          {/*  <ValueGrid item>{`${zipCodeInfo.country} (${zipCodeInfo.countryCode})`}</ValueGrid>*/}
-          {/*</RowGrid>*/}
-          {/*<RowGrid container>*/}
-          {/*    <LabelGrid item>Zip Code:</LabelGrid>*/}
-          {/*    <ValueGrid item>{zipCodeInfo.zipCode}</ValueGrid>*/}
-          {/*</RowGrid>*/}
-          <RowGrid container>
-            { zipCodeInfo.locations && zipCodeInfo.locations.map((location) =>
-              <Grid item key={`${location.latitude}, ${location.longitude}`}>
-                <Grid container>
-                  <LabelGrid item>City:</LabelGrid>
-                  <ValueGrid item>{location.locationName}</ValueGrid>
-                </Grid>
-                <Grid container>
-                  <LabelGrid item>State:</LabelGrid>
-                  <ValueGrid item>{`${location.state} (${location.stateCode})`}</ValueGrid>
-                </Grid>
-                {/*<Grid container>*/}
-                {/*  <LabelGrid item>Latitude:</LabelGrid>*/}
-                {/*  <ValueGrid item>{location.latitude}</ValueGrid>*/}
-                {/*</Grid>*/}
-                {/*<Grid container>*/}
-                {/*  <LabelGrid item>Longitude:</LabelGrid>*/}
-                {/*  <ValueGrid item>{location.longitude}</ValueGrid>*/}
-                {/*</Grid>*/}
+      { zipCodeInfoHistory && zipCodeInfoHistory.map((zipCodeInfo, index) =>
+        <Grid item key={`zipCode: ${zipCodeInfo.zipCode}`}>
+          <PaddedCard>
+            <Grid container>
+              <Grid item>
+                <RowGrid container>
+                  { zipCodeInfo?.locations && zipCodeInfo.locations.map((location) =>
+                    <Grid item key={`lat-long: ${location.latitude}, ${location.longitude}`}>
+                      <Grid container>
+                        <LabelGrid item sx={{ color: index ? "#CCC" : "black" }}>City:</LabelGrid>
+                        <ValueGrid item sx={{ color: index ? "#CCC" : "black" }}>{location.locationName}</ValueGrid>
+                      </Grid>
+                      <Grid container>
+                        <LabelGrid item sx={{ color: index ? "#CCC" : "black" }}>State:</LabelGrid>
+                        <ValueGrid item sx={{ color: index ? "#CCC" : "black" }}>
+                          {`${location.state} (${location.stateCode})`}
+                        </ValueGrid>
+                      </Grid>
+                    </Grid>
+                  )}
+                </RowGrid>
               </Grid>
-            )}
-          </RowGrid>
+            </Grid>
+          </PaddedCard>
         </Grid>
-      }
+      )}
     </ContainerGrid>
   );
 };
